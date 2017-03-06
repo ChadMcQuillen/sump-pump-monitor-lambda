@@ -72,12 +72,18 @@ function newSumpPumpAlert(level, initialTime) {
 }
 
 function onQueryLatestSumpPumpAlert(err, data) {
+    var currentLevel;
+    var newLevel;
     if (err) {
         console.error("Unable to query latest sump pump alert. Error:", JSON.stringify(err, null, 2));
+    } else if (data.Items.length == 0) {
+        // cold start - seed table with initial 'alert'
+        currentLevel = parseFloat(currentEvent['water-level'] / 60);
+        newLevel = Math.floor(currentLevel * 10) / 10;
+        newSumpPumpAlert(newLevel);
     } else {
-        var currentLevel = parseFloat(currentEvent['water-level'] / 60);
+        currentLevel = parseFloat(currentEvent['water-level'] / 60);
         var savedLevel = parseFloat(data.Items[0]['greater-than-level']);
-        var newLevel;
         if (currentLevel > parseFloat((savedLevel + .1))) {
             // transition to next level - send alert
             newLevel = Math.floor(currentLevel * 10) / 10;
