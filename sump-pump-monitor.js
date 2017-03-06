@@ -1,7 +1,5 @@
 'use strict';
 
-const TABLE_NAME = 'sump-pump-alerts';
-
 var AWS = require("aws-sdk");
 var moment = require("moment");
 
@@ -14,7 +12,7 @@ function sendSNS(message) {
     var params = {
         Message : message, 
         Subject : 'Sump Pump Water Level Change',
-        TopicArn : 'arn:aws:sns:us-east-1:217282925988:sump-pump-alerts'
+        TopicArn : process.env.SUMP_PUMP_ALERTS_TOPIC
     };
     sns.publish(params, function(err, data) {
         if (err) {
@@ -25,7 +23,7 @@ function sendSNS(message) {
 
 function refreshSumpPumpAlertTimestamp(data) {
     var params = {
-        TableName : TABLE_NAME,
+        TableName : process.env.SUMP_PUMP_ALERTS_TABLE,
         Key : {
             'sump-pump' : data['sump-pump'],
             'timestamp-initial' : data['timestamp-initial']
@@ -53,7 +51,7 @@ function newSumpPumpAlert(level, initialTime) {
     initialTime = initialTime || moment.utc().format();
     var now = moment.utc().format();
     var params = {
-        TableName : TABLE_NAME,
+        TableName : process.env.SUMP_PUMP_ALERTS_TABLE,
         Item : {
             'sump-pump' : 'primary',
             'timestamp-initial' : initialTime,
@@ -108,7 +106,7 @@ function onQueryLatestSumpPumpAlert(err, data) {
 
 function queryLatestSumpPumpAlert() {
     var params = {
-        TableName : TABLE_NAME,
+        TableName : process.env.SUMP_PUMP_ALERTS_TABLE,
         ProjectionExpression : '#sp, #tsi, #tsl, #gtl',
         KeyConditionExpression : '#sp = :sp',
         ExpressionAttributeNames : {
@@ -136,7 +134,7 @@ function queryLatestSumpPumpAlert() {
  */
 exports.handler = (event, context, callback) => {
     var params = {
-        'TableName' : 'sump-pump-water-level',
+        'TableName' : process.env.SUMP_PUMP_WATER_LEVEL_TABLE,
         'Item' : event
     };
     docClient.put(params, function(err, data) {
