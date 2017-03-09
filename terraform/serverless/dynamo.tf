@@ -1,7 +1,7 @@
 resource "aws_dynamodb_table" "sump-pump-water-level" {
     name = "sump-pump-water-level-${var.env}"
-    read_capacity = 1
-    write_capacity = 1
+    read_capacity = "${var.read_capacity}"
+    write_capacity = "${var.write_capacity}"
     hash_key = "sump-pump"
     range_key = "timestamp"
     attribute {
@@ -16,8 +16,8 @@ resource "aws_dynamodb_table" "sump-pump-water-level" {
 
 resource "aws_dynamodb_table" "sump-pump-alerts" {
     name = "sump-pump-alerts-${var.env}"
-    read_capacity = 1
-    write_capacity = 1
+    read_capacity = "${var.read_capacity}"
+    write_capacity = "${var.write_capacity}"
     hash_key = "sump-pump"
     range_key = "timestamp-initial"
     attribute {
