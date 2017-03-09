@@ -33,7 +33,7 @@ function refreshSumpPumpAlertTimestamp(data) {
             '#tsl' : 'timestamp-latest'
         },
         ExpressionAttributeValues : {
-            ':tsl' : moment.utc().format()
+            ':tsl' : currentEvent['timestamp']
         },
         ReturnValues : "UPDATED_NEW"
     };
@@ -47,17 +47,10 @@ function refreshSumpPumpAlertTimestamp(data) {
     });
 }
 
-function newSumpPumpAlert(level, initialTime) {
-    initialTime = initialTime || moment.utc().format();
-    var now = moment.utc().format();
+function newSumpPumpAlert(alert) {
     var params = {
         TableName : process.env.SUMP_PUMP_ALERTS_TABLE,
-        Item : {
-            'sump-pump' : 'primary',
-            'timestamp-initial' : initialTime,
-            'greater-than-level' : level,
-            'timestamp-latest' : now
-        }
+        Item : alert
     };
 
     docClient.put(params, function(err, data) {
@@ -71,34 +64,52 @@ function newSumpPumpAlert(level, initialTime) {
 
 function onQueryLatestSumpPumpAlert(err, data) {
     var currentLevel;
-    var newLevel;
+    var alert;
+    console.log(data);
     if (err) {
         console.error("Unable to query latest sump pump alert. Error:", JSON.stringify(err, null, 2));
     } else if (data.Items.length == 0) {
         // cold start - seed table with initial 'alert'
         currentLevel = parseFloat(currentEvent['water-level'] / 60);
-        newLevel = Math.floor(currentLevel * 10) / 10;
-        newSumpPumpAlert(newLevel);
+        alert = {
+            'sump-pump' : currentEvent['sump-pump'],
+            'timestamp-initial' : currentEvent['timestamp'],
+            'timestamp-latest' : currentEvent['timestamp'],
+            'greater-than-level' : Math.floor(currentLevel * 10) / 10
+        };
+        newSumpPumpAlert(alert);
     } else {
         currentLevel = parseFloat(currentEvent['water-level'] / 60);
         var savedLevel = parseFloat(data.Items[0]['greater-than-level']);
         if (currentLevel > parseFloat((savedLevel + .1))) {
             // transition to next level - send alert
-            newLevel = Math.floor(currentLevel * 10) / 10;
-            newSumpPumpAlert(newLevel);
-            sendSNS('Sump pump water level has exceeded ' + newLevel + '%.');
+            alert = {
+                'sump-pump' : currentEvent['sump-pump'],
+                'timestamp-initial' : currentEvent['timestamp'],
+                'timestamp-latest' : currentEvent['timestamp'],
+                'greater-than-level' : Math.floor(currentLevel * 10) / 10
+            };
+            newSumpPumpAlert(alert);
+            sendSNS('Sump pump water level has exceeded ' + alert['greater-than-level'] + '%.');
         } else if (currentLevel > savedLevel) {
             // refresh timestamp for this level
             refreshSumpPumpAlertTimestamp(data.Items[0]);
         } else {
             // check to see if it is time to downgrade level
-            var now = moment();
+            var now = moment(currentEvent['timestamp']);
             var then = moment(data.Items[0]['timestamp-latest']);
             var hoursSinceLevel = parseFloat(moment.duration(now.diff(then)).asHours());
             if (hoursSinceLevel > 1) {
-                newLevel = Math.floor(currentLevel * 10) / 10;
-                newSumpPumpAlert(newLevel, data.Items[0]['timestamp-initial']);
-                sendSNS('Sump pump water level has dropped below ' + newLevel + '%.');
+                alert = {
+                    'sump-pump' : currentEvent['sump-pump'],
+                    'timestamp-initial' : data.Items[0]['timestamp-latest'],
+                    'timestamp-latest' : currentEvent['timestamp'],
+                    'greater-than-level' : Math.floor(currentLevel * 10) / 10
+                };
+                newSumpPumpAlert(alert);
+                sendSNS('Sump pump water level has dropped below ' + alert['greater-than-level'] + '%.');
+            } else {
+                console.log('hours elapsed:  ' + hoursSinceLevel);
             }
         }
     }
