@@ -1,0 +1,62 @@
+[
+    {
+        "sump-pump"   : "primary",
+        "timestamp"   : "2017-01-01T00:00:00+00:00",
+        "water-level" : 17.3
+    },
+    {
+        "sump-pump"   : "primary",
+        "timestamp"   : "2017-01-01T00:00:01+00:00",
+        "water-level" : 17.4
+    },
+    {
+        "sump-pump"   : "primary",
+        "timestamp"   : "2017-01-01T00:00:02+00:00",
+        "water-level" : 17
+    },
+    {
+        "sump-pump"   : "primary",
+        "timestamp"   : "2017-01-01T00:00:03+00:00",
+        "water-level" : 17.5
+    },
+    {
+        "sump-pump"   : "primary",
+        "timestamp"   : "2017-01-01T00:00:04+00:00",
+        "water-level" : 18.1
+    },
+    {
+        "sump-pump"   : "primary",
+        "timestamp"   : "2017-01-01T00:00:05+00:00",
+        "water-level" : 18.2
+    },
+    {
+        "sump-pump"   : "primary",
+        "timestamp"   : "2017-01-01T00:00:06+00:00",
+        "water-level" : 17.8
+    },
+    {
+        "sump-pump"   : "primary",
+        "timestamp"   : "2017-01-01T00:00:07+00:00",
+        "water-level" : 18.3
+    },
+    {
+        "sump-pump"   : "primary",
+        "timestamp"   : "2017-01-01T01:00:06+00:00",
+        "water-level" : 17.9
+    },
+    {
+        "sump-pump"   : "primary",
+        "timestamp"   : "2017-01-01T01:00:07+00:00",
+        "water-level" : 17.7
+    },
+    {
+        "sump-pump"   : "primary",
+        "timestamp"   : "2017-01-01T01:00:08+00:00",
+        "water-level" : 17.5
+    },
+    {
+        "sump-pump"   : "primary",
+        "timestamp"   : "2017-01-01T01:00:09+00:00",
+        "water-level" : 17.6
+    }
+]
