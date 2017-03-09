@@ -65,7 +65,6 @@ function newSumpPumpAlert(alert) {
 function onQueryLatestSumpPumpAlert(err, data) {
     var currentLevel;
     var alert;
-    console.log(data);
     if (err) {
         console.error("Unable to query latest sump pump alert. Error:", JSON.stringify(err, null, 2));
     } else if (data.Items.length == 0) {
@@ -108,8 +107,6 @@ function onQueryLatestSumpPumpAlert(err, data) {
                 };
                 newSumpPumpAlert(alert);
                 sendSNS('Sump pump water level has dropped below ' + alert['greater-than-level'] + '%.');
-            } else {
-                console.log('hours elapsed:  ' + hoursSinceLevel);
             }
         }
     }
