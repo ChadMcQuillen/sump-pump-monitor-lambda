@@ -1,4 +1,4 @@
-module "serverless" {
+module "prod" {
     source = "../serverless"
     env = "prod"
     read_capacity = 1

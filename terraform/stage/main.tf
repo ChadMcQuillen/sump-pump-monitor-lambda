@@ -1,4 +1,4 @@
-module "serverless" {
+module "stage" {
     source = "../serverless"
     env = "stage"
     read_capacity = 2
