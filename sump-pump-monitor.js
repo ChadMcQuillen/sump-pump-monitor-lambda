@@ -89,7 +89,7 @@ function onQueryLatestSumpPumpAlert(err, data) {
                 'greater-than-level' : Math.floor(currentLevel * 10) / 10
             };
             newSumpPumpAlert(alert);
-            sendSNS('Sump pump water level has exceeded ' + alert['greater-than-level'] + '%.');
+            sendSNS('Sump pump water level has exceeded ' + (alert['greater-than-level'] * 100) + '%.');
         } else if (currentLevel > savedLevel) {
             // refresh timestamp for this level
             refreshSumpPumpAlertTimestamp(data.Items[0]);
@@ -106,7 +106,7 @@ function onQueryLatestSumpPumpAlert(err, data) {
                     'greater-than-level' : Math.floor(currentLevel * 10) / 10
                 };
                 newSumpPumpAlert(alert);
-                sendSNS('Sump pump water level has dropped below ' + alert['greater-than-level'] + '%.');
+                sendSNS('Sump pump water level has dropped below ' + (alert['greater-than-level'] * 100) + '%.');
             }
         }
     }
