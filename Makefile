@@ -13,7 +13,7 @@ node_modules/fs:
 	npm install fs
 
 check:  sump-pump-monitor.zip node_modules/aws-sdk node_modules/fs
-	node tests/test-lambda.js
+	node tests/test-sump-pump-monitor.js
 
 clean:
 	rm -f sump-pump-monitor.zip
