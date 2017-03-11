@@ -41,8 +41,6 @@ function refreshSumpPumpAlertTimestamp(data) {
     docClient.update(params, function(err, data) {
         if (err) {
             console.error("Unable to update sump pump alert timestamp. Error JSON:", JSON.stringify(err, null, 2));
-        } else {
-            console.log("Refereshed sump pump alert timestamp:", JSON.stringify(data, null, 2));
         }
     });
 }
@@ -56,8 +54,6 @@ function newSumpPumpAlert(alert) {
     docClient.put(params, function(err, data) {
         if (err) {
             console.error("Unable to write new sump pump alert. Error JSON:", JSON.stringify(err, null, 2));
-        } else {
-            console.log("Wrote new sump pump alert:", JSON.stringify(data, null, 2));
         }
     });
 }
@@ -148,8 +144,6 @@ exports.handler = (event, context, callback) => {
     docClient.put(params, function(err, data) {
         if (err) {
             console.error("Unable to write sump pump data. Error JSON:", JSON.stringify(err, null, 2));
-        } else {
-            console.log("Wrote new sump pump data:", JSON.stringify(data, null, 2));
         }
     });
     currentEvent = event;
