@@ -57,6 +57,7 @@ function processWaterLevel(event) {
         var then = moment(latestSumpPumpAlert['timestamp-latest']);
         var hoursSinceLevel = parseFloat(moment.duration(now.diff(then)).asHours());
         if (hoursSinceLevel > 1) {
+            sendSNS('Sump pump water level has dropped below ' + (latestSumpPumpAlert['greater-than-level'] * 100) + '%.');
             latestSumpPumpAlert = {
                 'sump-pump' : event['sump-pump'],
                 'timestamp-initial' : latestSumpPumpAlert['timestamp-latest'],
@@ -64,7 +65,6 @@ function processWaterLevel(event) {
                 'greater-than-level' : Math.floor(currentLevel * 10) / 10
             };
             writeSumpPumpAlert(latestSumpPumpAlert);
-            sendSNS('Sump pump water level has dropped below ' + (latestSumpPumpAlert['greater-than-level'] * 100) + '%.');
         }
     }
 }
